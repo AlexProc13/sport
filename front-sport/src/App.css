@@ -65,6 +65,10 @@ table {
   background-color: #e2e2e2;
 }
 
+.loading {
+  text-align: center;
+}
+
 div {
   padding: 10px;
 }
