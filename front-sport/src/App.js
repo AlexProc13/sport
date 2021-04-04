@@ -10,11 +10,11 @@ class App extends React.Component {
         this.nextWeek = this.nextWeek.bind(this);
 
         this.urls = {};
-        // setInterval(() => {
-        //     this.setState({
-        //         loaded: !this.state.loaded,
-        //     });
-        // }, 2000);
+        setInterval(() => {
+            this.setState({
+                loaded: !this.state.loaded,
+            });
+        }, 2000);
 
         this.state = {
             loaded: false,
