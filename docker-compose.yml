@@ -1,0 +1,81 @@
+version: "3.8"
+
+networks:
+  sport:
+
+services:
+  front-nginx:
+    image: nginx:stable-alpine
+    container_name: front-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./front-sport:/var/www/html/front
+      - ./docker/nginx/front.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - sport
+  back-nginx:
+    image: nginx:stable-alpine
+    container_name: back-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./back-sport/:/var/www/html/back
+      - ./docker/nginx/front.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - sport
+  mysql:
+    image: mysql:5.7
+    container_name: nuxbet-mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./back-sport/storage/app/docker/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DOCKER_DB}
+      MYSQL_USER: ${DOCKER_DB_USER}
+      MYSQL_PASSWORD: ${DOCKER_PWD}
+      MYSQL_ROOT_PASSWORD: ${DOCKER_PWD}
+    networks:
+      - sport
+  mysql-test:
+    image: mysql:5.7
+    container_name: mysql-test
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3310:3306"
+    volumes:
+      - ./back-sport/storage/app/docker/mysql-test:/var/lib/mysql-test
+    environment:
+      MYSQL_DATABASE: 'test'
+      MYSQL_USER: ${DOCKER_DB_USER}
+      MYSQL_PASSWORD: ${DOCKER_PWD}
+      MYSQL_ROOT_PASSWORD: ${DOCKER_PWD}
+    networks:
+      - sport
+  php:
+    build:
+      args:
+        main_user: 'nux'
+        user: 'nux'
+        uid: ${DOCKER_UID}
+      context: ./docker/php
+      dockerfile: ./Dockerfile
+    container_name: sport-php
+    working_dir: /var/www/html
+    volumes:
+      - ./back-sport:/var/www/html/back
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    depends_on:
+      - mysql
+    networks:
+      - sport
