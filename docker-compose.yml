@@ -24,7 +24,7 @@ services:
       - "8080:80"
     volumes:
       - ./back-sport/:/var/www/html/back
-      - ./docker/nginx/front.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/back.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
       - mysql
@@ -65,13 +65,13 @@ services:
   php:
     build:
       args:
-        main_user: 'nux'
-        user: 'nux'
+        main_user: 'sport'
+        user: 'sport'
         uid: ${DOCKER_UID}
       context: ./docker/php
       dockerfile: ./Dockerfile
     container_name: sport-php
-    working_dir: /var/www/html
+    working_dir: /var/www/html/back
     volumes:
       - ./back-sport:/var/www/html/back
       - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
