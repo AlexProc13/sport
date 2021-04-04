@@ -9,12 +9,11 @@ class App extends React.Component {
         this.playAll = this.playAll.bind(this);
         this.nextWeek = this.nextWeek.bind(this);
 
-        this.urls = {};
-        setInterval(() => {
-            this.setState({
-                loaded: !this.state.loaded,
-            });
-        }, 2000);
+        // setInterval(() => {
+        //     this.setState({
+        //         loaded: !this.state.loaded,
+        //     });
+        // }, 2000);
 
         this.state = {
             loaded: false,
@@ -74,16 +73,18 @@ class App extends React.Component {
     componentDidMount() {
         //get data by server
         console.log('get data', this.getUrls('getData'));
-        // axios.get(this.getUrls('getData'))
-        //     .then(res => {
-        //         if (res.data.status === true) {
-        //             this.setState({
-        //                 loaded: true,
-        //             });
-        //
-        //             this.setState(res.data.data);
-        //         }
-        //     })
+        axios.get(this.getUrls('getData'))
+            .then(res => {
+                if (res.data.status === true) {
+                    console.log(res.data.data);
+                    this.setState(res.data.data);
+
+                    this.setState({
+                        loaded: true,
+                    });
+
+                }
+            })
     }
 
     getUrls(key) {
