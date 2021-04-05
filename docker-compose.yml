@@ -32,11 +32,11 @@ services:
       - sport
   mysql:
     image: mysql:5.7
-    container_name: nuxbet-mysql
+    container_name: sport-mysql
     restart: unless-stopped
     tty: true
     ports:
-      - "3307:3306"
+      - "3311:3306"
     volumes:
       - ./back-sport/storage/app/docker/mysql:/var/lib/mysql
     environment:
@@ -48,11 +48,11 @@ services:
       - sport
   mysql-test:
     image: mysql:5.7
-    container_name: mysql-test
+    container_name: sport-mysql-test
     restart: unless-stopped
     tty: true
     ports:
-      - "3310:3306"
+      - "3312:3306"
     volumes:
       - ./back-sport/storage/app/docker/mysql-test:/var/lib/mysql-test
     environment:
@@ -77,5 +77,19 @@ services:
       - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     depends_on:
       - mysql
+    networks:
+      - sport
+  npm:
+    build:
+      args:
+        uid: ${DOCKER_UID}
+        gid: ${DOCKER_GID}
+      context: ./docker/node
+      dockerfile: ./Dockerfile
+    container_name: sport-npm
+    volumes:
+      - ./front-sport:/var/www/html/front
+    working_dir: /var/www/html/front
+    entrypoint: ['npm']
     networks:
       - sport
