@@ -7,7 +7,6 @@
 ```bash
 docker-compose run --rm npm install
 ```
-```
 - build assets:
 ```bash
 docker-compose run --rm npm run build
