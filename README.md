@@ -7,11 +7,7 @@
 ```bash
 docker-compose run --rm npm install
 ```
-- build assets:
-```bash
-docker-compose run --rm npm run build
-```
-- build assets:
+- build front-end app:
 ```bash
 docker-compose run --rm npm run build
 ```
