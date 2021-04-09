@@ -17,5 +17,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-
-$router->get('/api/getData', 'ChampionshipController@getData');
+$router->get('/api/getData', 'SoccerController@getData');
+$router->post('/api/nextWeek', 'SoccerController@nextWeek');
+$router->post('/api/playAll', 'SoccerController@playAll');
