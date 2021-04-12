@@ -19,6 +19,7 @@ class SoccerSeason extends PlayingSeason
 
         //DB::commit();
         $a = $this->viewData();
+        return $a;
 //        dd(2);
 //        return $a;
 //        dd($a);
@@ -107,22 +108,19 @@ class SoccerSeason extends PlayingSeason
 
     protected function viewData()
     {
-        $game = Game::oldest()->where('status', config('app.statuses.open'))->first();
-        dd($game);
-        $finishedGames = Game::where('season', $game->season)
-            ->where('season', $game->season)
-            ->where('status', config('app.statuses.finished'))
-            ->get();
+        $fistOpenGame = Game::oldest()->where('status', config('app.statuses.open'))->first();
 
-        $finishedGames = Game::where('season', $game->season)
-            ->where('season', $game->season)
+        $finishedGames = Game::where('season', $fistOpenGame->season)
+            ->where('season', $fistOpenGame->season)
             ->where('status', config('app.statuses.finished'))
             ->get();
 
         $table = [];
-        foreach (config('app.teams') as $team) {
+        $teams = config('app.teams');
+        foreach ($teams as $team) {
             $table[$team['id']] = [
-                'tema' => $team['name'],
+                'team_id' => $team['id'],
+                'team' => $team['name'],
                 'pts' => 0,
                 'p' => 0,
                 'w' => 0,
@@ -131,6 +129,9 @@ class SoccerSeason extends PlayingSeason
                 'gd' => 0,
             ];
         }
+
+        $spPairs = '@@';
+        $pairGames = [];
 
         foreach ($finishedGames as $game) {
             $homePts = $game->score_home > $game->score_away ? 3 : 0;
@@ -165,17 +166,86 @@ class SoccerSeason extends PlayingSeason
             $table[$game->away_id]['d'] = $table[$game->away_id]['d'] + $awayD;
             $table[$game->away_id]['l'] = $table[$game->away_id]['l'] + $awayL;
             $table[$game->away_id]['gd'] = $table[$game->away_id]['gd'] + $awayGD;
+
+            //pair game and check
+            $pairGames[$game->home_id . $spPairs . $game->away_id] = $game->score_home . $spPairs . $game->score_away;
         }
 
+        //matches
+        $matches = [];
+        $separator = '-';
+        $pattern = "%s $separator %s";
+
+        $lastPairs = Game::latest()
+            ->where('season', $fistOpenGame->season)
+            ->where('week', $fistOpenGame->week - 1)
+            ->where('status', config('app.statuses.finished'))->get();
+
+
+        foreach ($lastPairs as $lastPair) {
+            $matches[] = [
+                'home' => $teams[$lastPair->home_id]['name'],
+                'away' => $teams[$lastPair->away_id]['name'],
+                'score' => sprintf($pattern, $lastPair->score_home, $lastPair->score_away),
+            ];
+        }
+        //matches
+
         //sort by score
-        //and same score analyses by goals
+        usort($table, function ($a, $b) use ($pairGames, $spPairs) {
+            if ($a['pts'] == $b['pts']) {
+                //compare goals
+                //played two games
+                if (isset($pairGames[$a['team_id'] . $spPairs . $b['team_id']]) and isset($pairGames[$b['team_id'] . $spPairs . $a['team_id']])) {
+                    //compare goals
+                    $getScoreFirst = explode($spPairs, $pairGames[$a['team_id'] . $spPairs . $b['team_id']]);
+                    $teamA = $getScoreFirst[0];
+                    $teamB = $getScoreFirst[1] * 2;
+                    $getScoreSecond = explode($spPairs, $pairGames[$a['team_id'] . $spPairs . $b['team_id']]);
+                    $teamA = $teamA + $getScoreSecond[0] * 2;
+                    $teamB = $teamB + $getScoreSecond[1];
+                    return ($teamA > $teamB) ? 1 : -1;
+                }
+                return 0;
+            }
+            return ($a['pts'] < $b['pts']) ? 1 : -1;
+        });
+        //sort by score
+
         return [
-            'week' => $game->week,
-            'season' => $game->season,
-            'predictions' => $game->season,
-            'matches' => $game->matches,
             'table' => $table,
+            'matches' => $matches,
+            'week' => $fistOpenGame->week,
+            'season' => $fistOpenGame->season,
+            'predictions' => $this->predictions($table),
         ];
+    }
+
+
+    protected function predictions($table)
+    {
+        //to do - do by pts
+        $predictions = [];
+        $total = array_sum(array_map(function ($item) {
+            return $item['pts'];
+        }, $table));
+
+        foreach ($table as $item) {
+            $predictions[] = [
+                'percent' => ($item['pts'] * 100) / $total,
+                'team' => $item['team'],
+            ];
+        }
+
+        usort($predictions, function ($a, $b) {
+            if ($a['percent'] == $b['percent']) {
+                return 0;
+            }
+            return ($a['percent'] > $b['percent']) ? -1 : 1;
+        });
+
+        return $predictions;
+
     }
 
     public function playAll()

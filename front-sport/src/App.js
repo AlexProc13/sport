@@ -17,56 +17,6 @@ class App extends React.Component {
 
         this.state = {
             loaded: false,
-            serverData: '',
-            week: 2,
-            season: 2,
-            predictions: [
-                {
-                    team: 'Zenit',
-                    percent: 20,
-                },
-            ],
-            matches: [
-                {
-                    home: 'Zenit',
-                    away: 'Shaxtar',
-                    score: '3 - 2',
-                },
-                {
-                    home: 'Zenit',
-                    away: 'Shaxtar',
-                    score: '3 - 2',
-                }
-            ],
-            table: [
-                {
-                    team: 'Zenit',
-                    pts: 10,
-                    p: 2,
-                    w: 3,
-                    d: 2,
-                    l: 2,
-                    gd: -2
-                },
-                {
-                    team: 'Zenit',
-                    pts: 10,
-                    p: 2,
-                    w: 3,
-                    d: 2,
-                    l: 2,
-                    gd: -2
-                },
-                {
-                    team: 'Zenit',
-                    pts: 10,
-                    p: 2,
-                    w: 3,
-                    d: 2,
-                    l: 2,
-                    gd: -2
-                }
-            ]
         };
     }
 
@@ -102,16 +52,16 @@ class App extends React.Component {
         this.setState({
             loaded: false,
         });
-        // axios.get(this.getUrls('playAll'))
-        //     .then(res => {
-        //         if (res.data.status === true) {
-        //             this.setState({
-        //                 loaded: true,
-        //             });
-        //
-        //             this.setState(res.data.data);
-        //         }
-        //     })
+        axios.post(this.getUrls('playAll'))
+            .then(res => {
+                if (res.data.status === true) {
+                    this.setState({
+                        loaded: true,
+                    });
+
+                    this.setState(res.data.data);
+                }
+            })
     }
 
     nextWeek() {
@@ -119,17 +69,16 @@ class App extends React.Component {
         this.setState({
             loaded: false,
         });
-        // axios.get(this.getUrls('playAll'))
-        //     .then(res => {
-        //         if (res.data.status === true) {
-        //             this.setState({
-        //                 loaded: true,
-        //             });
-        //
-        //             this.setState(res.data.data);
-        //         }
-        //     })
+        axios.post(this.getUrls('playAll'))
+            .then(res => {
+                if (res.data.status === true) {
+                    this.setState({
+                        loaded: true,
+                    });
 
+                    this.setState(res.data.data);
+                }
+            })
     }
 
     render() {
