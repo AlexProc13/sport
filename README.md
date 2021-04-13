@@ -13,14 +13,18 @@ docker-compose run --rm npm run build
 ```
 - run composer: 
 ```bash
-sudo docker-compose run --rm php php artisan migrate
+docker-compose run --rm php composer install
 ```
 - run migration:
 ```bash
-sudo docker-compose exec php php artisan migrate
+docker-compose run --rm php php artisan migrate
 ```
 - set permissions (in back-sport directory):
 ```bash
 sudo chgrp -R www-data storage bootstrap/cache
 sudo chmod -R ug+rwx storage bootstrap/cache
+```
+- start:
+```bash
+docker-compose up
 ```
