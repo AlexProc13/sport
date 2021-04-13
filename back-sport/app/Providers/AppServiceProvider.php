@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\PlayingSeason\PlayingSeason;
-use App\Services\PlayingSeason\SoccerSeason;
+use App\Services\PlayingSeason\PlayingSoccer;
+use App\Services\ViewSport\ViewSoccer;
+use App\Services\ViewSport\ViewSport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,7 +20,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PlayingSeason::class, function ($app, $params) {
             //todo - depends by sport id
             $list = [
-                'soccer' => SoccerSeason::class,
+                'soccer' => PlayingSoccer::class,
+            ];
+            return new $list['soccer'];
+        });
+
+        $this->app->bind(ViewSport::class, function ($app, $params) {
+            //todo - depends by sport id
+            $list = [
+                'soccer' => ViewSoccer::class,
             ];
             return new $list['soccer'];
         });

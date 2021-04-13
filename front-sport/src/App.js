@@ -26,7 +26,6 @@ class App extends React.Component {
         axios.get(this.getUrls('getData'))
             .then(res => {
                 if (res.data.status === true) {
-                    console.log(res.data.data);
                     this.setState(res.data.data);
 
                     this.setState({
@@ -69,7 +68,7 @@ class App extends React.Component {
         this.setState({
             loaded: false,
         });
-        axios.post(this.getUrls('playAll'))
+        axios.post(this.getUrls('nextWeek'))
             .then(res => {
                 if (res.data.status === true) {
                     this.setState({

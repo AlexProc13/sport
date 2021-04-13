@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use DB;
+use App\Models\Game;
 use Illuminate\Http\Request;
+use App\Services\ViewSport\ViewSport;
 use App\Services\PlayingSeason\PlayingSeason;
 
 class SoccerController extends Controller
@@ -17,34 +20,60 @@ class SoccerController extends Controller
         //
     }
 
-    public function getData(Request $request, PlayingSeason $playingSeasonService)
+    public function getData(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
-        //to do service  and inject
-        //get currency active season
-        //if season is finished => start new
-        //if not return current week
+        $latest = Game::oldest()->where('status', config('app.statuses.open'))->first();
 
-        $data = $playingSeasonService->getCurrentWeek();
+        if (!$latest) {
+            //create new season
+            DB::beginTransaction();
+            $playingSeasonService->startSeason();
+            $playingSeasonService->nextWeek();
+            DB::commit();
+        }
 
+        $viewData = $viewSport->getCurrentWeek();
         return [
             'status' => true,
-            'data' => [
-                'week' => $data['week'],
-                'season' => $data['season'],
-                'predictions' => $data['predictions'],
-                'matches' => $data['matches'],
-                'table' => $data['table'],
-            ],
+            'data' => $viewData,
         ];
     }
 
-    public function nextWeek(Request $request)
+    public function nextWeek(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
+        $latest = Game::oldest()->where('status', config('app.statuses.open'))->first();
+        DB::beginTransaction();
+        if (!$latest) {
+            //create new season
+            $playingSeasonService->startSeason();
 
+        }
+        $playingSeasonService->nextWeek();
+        DB::commit();
+
+        $viewData = $viewSport->getCurrentWeek();
+        return [
+            'status' => true,
+            'data' => $viewData,
+        ];
     }
 
-    public function playAll(Request $request)
+    public function playAll(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
+        $latest = Game::oldest()->where('status', config('app.statuses.open'))->first();
+        DB::beginTransaction();
+        if (!$latest) {
+            //create new season
+            $playingSeasonService->startSeason();
 
+        }
+
+        $playingSeasonService->playAll();
+        DB::commit();
+        $viewData = $viewSport->getCurrentWeek();
+        return [
+            'status' => true,
+            'data' => $viewData,
+        ];
     }
 }
