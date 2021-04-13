@@ -13,7 +13,7 @@ docker-compose run --rm npm run build
 ```
 - run composer: 
 ```bash
-docker-compose run --rm php composer install
+sudo docker-compose run --rm php php artisan migrate
 ```
 - run migration:
 ```bash
