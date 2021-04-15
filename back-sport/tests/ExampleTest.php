@@ -1,21 +1,35 @@
 <?php
 
+use App\Services\PlayingSeason\Helper;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class ExampleTest extends TestCase
+class UnitTest extends TestCase
 {
     /**
-     * A basic test example.
      *
      * @return void
      */
-    public function testExample()
+    public function testRoundRobinAlgorithm()
     {
-        $this->get('/');
+        //to do
+        $teams = config('app.teams');
+        $shuffleTeams = $teams;
+        shuffle($shuffleTeams);
 
-        $this->assertEquals(
-            $this->app->version(), $this->response->getContent()
-        );
+        foreach (range(1, 6) as $number) {
+            $week = mt_rand(0, 5);
+            $games = Helper::roundRobinAlgorithm(array_values($shuffleTeams));
+            $compare = [];
+            foreach ($games[$week] as $weekGame) {
+                //to do
+                foreach ($weekGame as $match) {
+                    $compare[] = $match['id'];
+                }
+            }
+
+            $compare = array_unique($compare);
+            $this->assertEquals(count($teams), count($compare));
+        }
     }
 }
