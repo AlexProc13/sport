@@ -19,6 +19,10 @@ docker-compose run --rm php composer install
 ```bash
 docker-compose run --rm php php artisan migrate
 ```
+- run seed's:
+```bash
+docker-compose run --rm php php artisan db:seed
+```
 - set permissions (in back-sport directory):
 ```bash
 sudo chgrp -R www-data storage bootstrap/cache
