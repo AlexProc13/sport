@@ -115,7 +115,7 @@ class ViewSoccer extends ViewSport
                     $getScoreFirst = explode($spPairs, $pairGames[$a['team_id'] . $spPairs . $b['team_id']]);
                     $teamA = $getScoreFirst[0];
                     $teamB = $getScoreFirst[1] * 2;
-                    $getScoreSecond = explode($spPairs, $pairGames[$a['team_id'] . $spPairs . $b['team_id']]);
+                    $getScoreSecond = explode($spPairs, $pairGames[$b['team_id'] . $spPairs . $a['team_id']]);
                     $teamA = $teamA + $getScoreSecond[0] * 2;
                     $teamB = $teamB + $getScoreSecond[1];
                     return ($teamA > $teamB) ? 1 : -1;
