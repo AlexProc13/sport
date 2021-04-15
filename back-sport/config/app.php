@@ -48,4 +48,8 @@ return [
             'attack' => 88,
         ],
     ],
+    'user' => [
+        'id' => 1,
+        'email' => 'alexproc1313@gmail.com',
+    ],
 ];

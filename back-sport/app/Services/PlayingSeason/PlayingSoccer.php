@@ -2,6 +2,7 @@
 
 namespace App\Services\PlayingSeason;
 
+use Log;
 use App\Models\Game;
 
 class PlayingSoccer extends PlayingSeason
@@ -9,6 +10,7 @@ class PlayingSoccer extends PlayingSeason
     public function playAll()
     {
         $games = Game::select('week')->distinct()->where('status', config('app.statuses.open'))->get();
+
         foreach ($games as $game) {
             $this->playingWeek();
         }
@@ -25,8 +27,9 @@ class PlayingSoccer extends PlayingSeason
         $games = $this->sorting($teams);
         //write to database
         $season = 1;
-        $lastGame = Game::latest()->first();
-        if (!is_null($lastGame)) {
+        $lastGame = Game::latest('id')->first();
+
+        if ($lastGame) {
             $season = $lastGame->season + 1;
         }
 
@@ -57,9 +60,8 @@ class PlayingSoccer extends PlayingSeason
     protected function playingWeek()
     {
         //get current week
-        $game = Game::oldest()->where('status', config('app.statuses.open'))->first();
+        $game = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
         $gamesByWeek = Game::where('season', $game->season)
-            ->where('season', $game->season)
             ->where('week', $game->week)
             ->where('status', config('app.statuses.open'))
             ->get();

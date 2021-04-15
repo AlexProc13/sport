@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Exception;
 use Illuminate\Support\ServiceProvider;
 use App\Services\PlayingSeason\PlayingSeason;
 use App\Services\PlayingSeason\PlayingSoccer;
@@ -18,19 +19,29 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(PlayingSeason::class, function ($app, $params) {
-            //todo - depends by sport id
+            $typeSport = config('typeSport');
+            if (is_null($typeSport)) {
+                throw new Exception('wrong type');
+            }
+
             $list = [
                 'soccer' => PlayingSoccer::class,
             ];
-            return new $list['soccer'];
+
+            return new $list[$typeSport];
         });
 
         $this->app->bind(ViewSport::class, function ($app, $params) {
-            //todo - depends by sport id
+
+            $typeSport = config('typeSport');
+            if (is_null($typeSport)) {
+                throw new Exception('wrong type');
+            }
+
             $list = [
                 'soccer' => ViewSoccer::class,
             ];
-            return new $list['soccer'];
+            return new $list[$typeSport];
         });
     }
 

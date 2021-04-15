@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use App\Models\User;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use App\Services\ViewSport\ViewSport;
@@ -17,22 +18,25 @@ class SoccerController extends Controller
      */
     public function __construct()
     {
-        //
+        //set type of sport for service provider
+        config(['typeSport' => 'soccer']);
     }
 
     public function getData(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
-        $latest = Game::oldest()->where('status', config('app.statuses.open'))->first();
-
+        DB::beginTransaction();
+        //to do queue for parallel queries (to do middleware)
+        User::where('id', config('app.user.id'))->lockForUpdate()->first();
+        $latest = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
         if (!$latest) {
             //create new season
-            DB::beginTransaction();
+            //to do queue for parallel queries
             $playingSeasonService->startSeason();
             $playingSeasonService->nextWeek();
-            DB::commit();
         }
 
         $viewData = $viewSport->getCurrentWeek();
+        DB::commit();
         return [
             'status' => true,
             'data' => $viewData,
@@ -41,17 +45,21 @@ class SoccerController extends Controller
 
     public function nextWeek(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
-        $latest = Game::oldest()->where('status', config('app.statuses.open'))->first();
         DB::beginTransaction();
+        //to do queue for parallel queries (to do middleware)
+        User::where('id', config('app.user.id'))->lockForUpdate()->first();
+
+        $latest = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
         if (!$latest) {
             //create new season
             $playingSeasonService->startSeason();
-
         }
+
         $playingSeasonService->nextWeek();
-        DB::commit();
 
         $viewData = $viewSport->getCurrentWeek();
+        DB::commit();
+
         return [
             'status' => true,
             'data' => $viewData,
@@ -60,17 +68,21 @@ class SoccerController extends Controller
 
     public function playAll(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
-        $latest = Game::oldest()->where('status', config('app.statuses.open'))->first();
         DB::beginTransaction();
+        //to do queue for parallel queries (to do middleware)
+        User::where('id', config('app.user.id'))->lockForUpdate()->first();
+        $latest = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
+
         if (!$latest) {
             //create new season
             $playingSeasonService->startSeason();
-
         }
 
         $playingSeasonService->playAll();
-        DB::commit();
+
         $viewData = $viewSport->getCurrentWeek();
+        DB::commit();
+
         return [
             'status' => true,
             'data' => $viewData,

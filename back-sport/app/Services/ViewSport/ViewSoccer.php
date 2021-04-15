@@ -13,10 +13,10 @@ class ViewSoccer extends ViewSport
 
     protected function viewData()
     {
-        $fistOpenGame = Game::oldest()->where('status', config('app.statuses.open'))->first();
+        $fistOpenGame = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
         //to do
         if (!$fistOpenGame) {
-            $latestGame = Game::latest()->where('status', config('app.statuses.finished'))->first();
+            $latestGame = Game::latest('id')->where('status', config('app.statuses.finished'))->first();
             $week = $latestGame->week;
             $season = $latestGame->season;
         } else {
@@ -91,7 +91,7 @@ class ViewSoccer extends ViewSport
         $separator = '-';
         $pattern = "%s $separator %s";
 
-        $lastPairs = Game::latest()
+        $lastPairs = Game::latest('id')
             ->where('season', $season)
             ->where('week', $week)
             ->where('status', config('app.statuses.finished'))->get();
