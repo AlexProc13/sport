@@ -121,7 +121,8 @@ class App extends React.Component {
                             </p>
                         </div>
                         <div className="resultBlock">
-                            <h4>{this.state.week}th Week Predictions of Championship</h4>
+                            <h4>Match Results</h4>
+                            <h5>{this.state.week}th Week Match Result</h5>
 
                             {this.state.matches.map((value, index) => {
                                 return <p key={index + this.state.season}>{value.home} <b>{value.score}</b> {value.away}</p>
