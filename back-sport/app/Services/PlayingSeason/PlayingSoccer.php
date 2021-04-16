@@ -86,9 +86,9 @@ class PlayingSoccer extends PlayingSeason
         $luckWho = rand(0, 1);
 
         if ($luckWho == 0) {
-            $homeLuck = rand(50, 159);
+            $homeLuck = rand(50, 150);
         } else {
-            $awayLuck = rand(50, 150);
+            $awayLuck = rand(50, 100);
         }
 
         $teams = config('app.teams');
