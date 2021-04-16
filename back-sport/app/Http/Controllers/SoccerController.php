@@ -27,8 +27,9 @@ class SoccerController extends Controller
         DB::beginTransaction();
         //to do queue for parallel queries (to do middleware)
         User::where('id', config('app.user.id'))->lockForUpdate()->first();
-        $latest = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
-        if (!$latest) {
+        //$latest = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
+        $emptyTable = Game::count();
+        if (!$emptyTable) {
             //create new season
             //to do queue for parallel queries
             $playingSeasonService->startSeason();

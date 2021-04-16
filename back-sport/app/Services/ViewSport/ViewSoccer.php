@@ -15,6 +15,7 @@ class ViewSoccer extends ViewSport
     {
         $fistOpenGame = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
         //to do
+
         if (!$fistOpenGame) {
             $latestGame = Game::latest('id')->where('status', config('app.statuses.finished'))->first();
             $week = $latestGame->week;
@@ -109,8 +110,7 @@ class ViewSoccer extends ViewSport
         usort($table, function ($a, $b) use ($pairGames, $spPairs) {
             if ($a['pts'] == $b['pts']) {
                 //compare goals who played two games
-                if (isset($pairGames[$a['team_id'] . $spPairs . $b['team_id']])
-                    and isset($pairGames[$b['team_id'] . $spPairs . $a['team_id']])) {
+                if (isset($pairGames[$a['team_id'] . $spPairs . $b['team_id']]) and isset($pairGames[$b['team_id'] . $spPairs . $a['team_id']])) {
                     //compare goals
                     $getScoreFirst = explode($spPairs, $pairGames[$a['team_id'] . $spPairs . $b['team_id']]);
                     $teamA = $getScoreFirst[0];

@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
                 'soccer' => PlayingSoccer::class,
             ];
 
-            return new $list[$typeSport];
+            return new $list[$typeSport]();
         });
 
         $this->app->bind(ViewSport::class, function ($app, $params) {
@@ -41,7 +41,8 @@ class AppServiceProvider extends ServiceProvider
             $list = [
                 'soccer' => ViewSoccer::class,
             ];
-            return new $list[$typeSport];
+
+            return new $list[$typeSport]();
         });
     }
 

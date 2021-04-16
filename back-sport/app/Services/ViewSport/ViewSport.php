@@ -2,7 +2,8 @@
 
 namespace App\Services\ViewSport;
 
-abstract class ViewSport {
+abstract class ViewSport
+{
 
     abstract public function getCurrentWeek();
 

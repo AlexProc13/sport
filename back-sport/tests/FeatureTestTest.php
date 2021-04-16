@@ -1,6 +1,9 @@
 <?php
 
+namespace Tests;
+
 use Artisan;
+use Tests\TestCase;
 use App\Models\User;
 use App\Models\Game;
 use Laravel\Lumen\Testing\DatabaseMigrations;
@@ -72,5 +75,4 @@ class FeatureTest extends TestCase
             ],
         ]);
     }
-
 }

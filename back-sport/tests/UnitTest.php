@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests;
+
+use Tests\TestCase;
 use App\Services\PlayingSeason\Helper;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
