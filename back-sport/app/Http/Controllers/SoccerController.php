@@ -25,7 +25,7 @@ class SoccerController extends Controller
     public function getData(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
         DB::beginTransaction();
-        //to do queue for parallel queries (to do middleware)
+        //to do queue for parallel queries (to do)
         User::where('id', config('app.user.id'))->lockForUpdate()->first();
         //$latest = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
         $emptyTable = Game::count();
@@ -47,7 +47,7 @@ class SoccerController extends Controller
     public function nextWeek(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
         DB::beginTransaction();
-        //to do queue for parallel queries (to do middleware)
+        //to do queue for parallel queries (to do)
         User::where('id', config('app.user.id'))->lockForUpdate()->first();
 
         $latest = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
@@ -70,7 +70,7 @@ class SoccerController extends Controller
     public function playAll(Request $request, PlayingSeason $playingSeasonService, ViewSport $viewSport)
     {
         DB::beginTransaction();
-        //to do queue for parallel queries (to do middleware)
+        //to do queue for parallel queries (to do)
         User::where('id', config('app.user.id'))->lockForUpdate()->first();
         $latest = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
 
