@@ -14,8 +14,8 @@ class ViewSoccer extends ViewSport
     protected function viewData()
     {
         $fistOpenGame = Game::oldest('id')->where('status', config('app.statuses.open'))->first();
+        
         //to do
-
         if (!$fistOpenGame) {
             $latestGame = Game::latest('id')->where('status', config('app.statuses.finished'))->first();
             $week = $latestGame->week;
